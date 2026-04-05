@@ -1,0 +1,45 @@
+{
+  "name": "bandari",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bandari MVP — local-only Kenya->China cross-border payment prototype (sandbox).",
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "db:generate": "pnpm --filter @bandari/api db:generate",
+    "db:migrate": "pnpm --filter @bandari/api db:migrate",
+    "db:seed": "pnpm --filter @bandari/api db:seed",
+    "db:reset": "pnpm --filter @bandari/api db:reset",
+    "services:up": "bash scripts/services.sh up",
+    "services:down": "bash scripts/services.sh down",
+    "services:status": "bash scripts/services.sh status",
+    "tunnel": "bash scripts/tunnel.sh",
+    "verify": "turbo run build --filter=@bandari/api && pnpm --filter @bandari/api db:deploy && pnpm --filter @bandari/api verify",
+    "verify:live": "turbo run build --filter=@bandari/api && pnpm --filter @bandari/api db:deploy && pnpm --filter @bandari/api verify:live",
+    "probe": "turbo run build --filter=@bandari/api && pnpm --filter @bandari/api probe",
+    "e2e": "turbo run build --filter=@bandari/api && pnpm --filter @bandari/api db:deploy && pnpm --filter @bandari/api e2e",
+    "hooks:install": "bash scripts/install-git-hooks.sh"
+  },
+  "devDependencies": {
+    "prettier": "^3.4.2",
+    "turbo": "^2.5.0",
+    "typescript": "^5.7.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@nestjs/core",
+      "@prisma/client",
+      "@prisma/engines",
+      "prisma",
+      "esbuild",
+      "msgpackr-extract"
+    ]
+  }
+}
