@@ -1,0 +1,50 @@
+{
+  "name": "@bandari/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "prisma generate && nest build",
+    "start": "node dist/main.js",
+    "start:dev": "nest start --watch",
+    "dev": "nest start --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "echo \"(api) no eslint configured\"",
+    "clean": "rm -rf dist .turbo *.tsbuildinfo",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:reset": "prisma migrate reset --force",
+    "db:seed": "prisma db seed",
+    "probe": "node dist/scripts/probe.js",
+    "e2e": "node dist/scripts/e2e.js",
+    "verify": "node dist/scripts/verify.js",
+    "verify:live": "ADAPTER_MODE=live node dist/scripts/verify.js",
+    "stablecoin:keygen": "tsx src/scripts/gen-evm-wallet.ts",
+    "stablecoin:test": "tsx src/scripts/stablecoin.ts"
+  },
+  "prisma": {
+    "seed": "tsx src/scripts/seed.ts"
+  },
+  "dependencies": {
+    "@bandari/shared": "workspace:*",
+    "@nestjs/common": "^11.0.5",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/core": "^11.0.5",
+    "@nestjs/platform-fastify": "^11.0.5",
+    "@prisma/client": "^6.3.0",
+    "bullmq": "^5.34.10",
+    "ioredis": "^5.4.2",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "viem": "^2.51.3",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@nestjs/cli": "^11.0.2",
+    "@nestjs/schematics": "^11.0.0",
+    "@types/node": "^22.10.7",
+    "prisma": "^6.3.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
