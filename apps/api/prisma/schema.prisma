@@ -1,0 +1,226 @@
+// Bandari MVP data model. Postgres + double-entry ledger.
+// Money is stored as integer minor units (see packages/shared/money.ts).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Currency {
+  KES
+  USD
+  USDC
+  CNY
+}
+
+enum PaymentStatus {
+  Quoted
+  AwaitingFunding
+  Funded
+  OnRamped
+  Bridging
+  Bridged
+  PayingOut
+  Settled
+  Failed
+  Refunding
+  Refunded
+}
+
+enum KycStatus {
+  unverified
+  pending
+  verified
+  rejected
+}
+
+enum SupplierValidation {
+  unvalidated
+  validated
+  rejected
+}
+
+enum PayoutMethod {
+  bank
+  alipay
+}
+
+enum LedgerDirection {
+  debit
+  credit
+}
+
+enum WebhookSource {
+  mpesa
+  circle
+  onramp
+  payout
+}
+
+model Importer {
+  id           String     @id @default(cuid())
+  name         String
+  email        String     @unique
+  msisdn       String
+  businessName String?
+  kycStatus    KycStatus  @default(unverified)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  suppliers    Supplier[]
+  payments     Payment[]
+  kycRecords   KycRecord[]
+}
+
+model Supplier {
+  id               String             @id @default(cuid())
+  importerId       String
+  importer         Importer           @relation(fields: [importerId], references: [id])
+  name             String
+  country          String             @default("CHN")
+  payoutMethod     PayoutMethod
+  accountName      String
+  accountNumber    String
+  bankName         String?
+  validationStatus SupplierValidation @default(unvalidated)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  payments         Payment[]
+}
+
+model Quote {
+  id              String    @id @default(cuid())
+  sendMinorKes    Int
+  usdMinor        Int
+  receiveMinorCny Int
+  rateKesPerUsd   Float
+  rateCnyPerUsd   Float
+  marginBps       Int
+  feeMinorKes     Int
+  allInMinorKes   Int
+  expiresAt       DateTime
+  consumed        Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  payments        Payment[]
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  status         PaymentStatus @default(Quoted)
+  importerId     String
+  importer       Importer      @relation(fields: [importerId], references: [id])
+  supplierId     String
+  supplier       Supplier      @relation(fields: [supplierId], references: [id])
+  quoteId        String
+  quote          Quote         @relation(fields: [quoteId], references: [id])
+  reference      String?
+  idempotencyKey String        @unique
+
+  // amounts captured from the consumed quote
+  sendMinorKes    Int
+  allInMinorKes   Int
+  feeMinorKes     Int
+  usdMinor        Int
+  usdcMinor       Int?
+  receiveMinorCny Int
+
+  // external references collected as the payment progresses
+  mpesaCheckoutId String?
+  walletTxHash    String?
+  attestationId   String?
+  payoutId        String?
+  settlementId    String?
+  failureReason   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events       PaymentEvent[]
+  ledgerEntries LedgerEntry[]
+  walletTxs    WalletTransaction[]
+
+  @@index([status])
+  @@index([importerId])
+}
+
+model PaymentEvent {
+  id         String         @id @default(cuid())
+  paymentId  String
+  payment    Payment        @relation(fields: [paymentId], references: [id])
+  type       String
+  fromStatus PaymentStatus?
+  toStatus   PaymentStatus?
+  message    String
+  data       Json?
+  createdAt  DateTime       @default(now())
+
+  @@index([paymentId])
+}
+
+model LedgerEntry {
+  id         String          @id @default(cuid())
+  paymentId  String?
+  payment    Payment?        @relation(fields: [paymentId], references: [id])
+  account    String
+  currency   Currency
+  direction  LedgerDirection
+  amountMinor Int
+  memo       String?
+  createdAt  DateTime        @default(now())
+
+  @@index([paymentId])
+  @@index([account, currency])
+}
+
+model WalletTransaction {
+  id            String   @id @default(cuid())
+  paymentId     String?
+  payment       Payment? @relation(fields: [paymentId], references: [id])
+  txHash        String?
+  chain         String?
+  amountUsdcMinor Int
+  fromWallet    String?
+  toWallet      String?
+  confirmations Int      @default(0)
+  attestationId String?
+  status        String   @default("pending")
+  raw           Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([paymentId])
+}
+
+model WebhookEvent {
+  id            String        @id @default(cuid())
+  source        WebhookSource
+  externalId    String?
+  dedupeKey     String        @unique
+  signatureValid Boolean      @default(false)
+  payload       Json
+  processedAt   DateTime?
+  createdAt     DateTime      @default(now())
+}
+
+model KycRecord {
+  id         String      @id @default(cuid())
+  importerId String
+  importer   Importer    @relation(fields: [importerId], references: [id])
+  provider   String
+  status     KycStatus
+  raw        Json?
+  createdAt  DateTime    @default(now())
+  documents  KycDocument[]
+}
+
+model KycDocument {
+  id          String    @id @default(cuid())
+  kycRecordId String
+  kycRecord   KycRecord @relation(fields: [kycRecordId], references: [id])
+  type        String
+  reference   String
+  createdAt   DateTime  @default(now())
+}
