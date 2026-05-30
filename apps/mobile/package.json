@@ -1,0 +1,16 @@
+{
+  "name": "@bandari/mobile",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Bandari mobile app (Expo / React Native) — scaffolded now, built later. Consumes @bandari/shared.",
+  "scripts": {
+    "dev": "echo \"(mobile) scaffold only. Run: pnpm mobile:bootstrap (see README) to add Expo deps, then 'expo start'.\"",
+    "build": "echo \"(mobile) scaffold only — nothing to build yet.\"",
+    "typecheck": "echo \"(mobile) scaffold only — typecheck enabled after Expo deps are installed.\"",
+    "lint": "echo \"(mobile) scaffold only.\"",
+    "clean": "echo \"(mobile) nothing to clean.\""
+  },
+  "dependencies": {
+    "@bandari/shared": "workspace:*"
+  }
+}
