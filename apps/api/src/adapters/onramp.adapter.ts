@@ -39,7 +39,7 @@ export class OnRampAdapter implements SegmentAdapter {
       usdcMinor,
       providerRef: `onramp_mock_${randomUUID().slice(0, 10)}`,
       mode: "mock",
-      raw: { simulated: true, asset: "USDT", kes: toDecimal(input.amountMinorKes, "KES"), rate: input.rateKesPerUsd },
+      raw: { simulated: true, asset: "USDC", kes: toDecimal(input.amountMinorKes, "KES"), rate: input.rateKesPerUsd },
     };
   }
 

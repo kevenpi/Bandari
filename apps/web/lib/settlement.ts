@@ -45,7 +45,7 @@ export const SETTLEMENT_OPTIONS: SettlementOption[] = [
     marginBps: 70,
     hop: "Hong Kong",
     blurb:
-      "Off-ramped in Hong Kong: the HK partner converts USDT→HKD (≈7.80) and pays a HK account. Freely convertible and the corridor Bandari wires first.",
+      "Off-ramped in Hong Kong: the HK partner converts USDC→HKD (≈7.80) and pays a HK account. Freely convertible and the corridor Bandari wires first.",
   },
   {
     currency: "USD",

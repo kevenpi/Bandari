@@ -61,7 +61,7 @@ export class ChinaPayoutAdapter implements SegmentAdapter {
   async createPayout(input: PayoutInput): Promise<PayoutCreateResult> {
     if (this.mode === "live") return this.livePayout(input, "create");
     await jitter(25, 80);
-    // Stubbed HK off-ramp: USDT(USDC) -> HKD before the local payout leg.
+    // Stubbed HK off-ramp: USDC -> HKD before the local payout leg.
     const hkFx = hkFxQuote(input.amountUsdcMinor);
     return {
       payoutId: `payout_mock_${randomUUID().slice(0, 12)}`,

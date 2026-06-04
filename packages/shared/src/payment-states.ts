@@ -71,7 +71,7 @@ export const STATUS_META: Record<
   Quoted: { label: "Quoted", tone: "neutral" },
   AwaitingFunding: { label: "Awaiting funding", tone: "info" },
   Funded: { label: "Funded", tone: "info" },
-  OnRamped: { label: "On-ramped to USDT", tone: "info" },
+  OnRamped: { label: "On-ramped to USDC", tone: "info" },
   Bridging: { label: "Bridging", tone: "info" },
   Bridged: { label: "Bridged", tone: "info" },
   PayingOut: { label: "Paying out", tone: "info" },

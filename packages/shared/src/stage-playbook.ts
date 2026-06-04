@@ -77,12 +77,12 @@ export const STAGE_PLAYBOOK: Record<PaymentStatus, StagePlaybook> = {
   },
   OnRamped: {
     status: "OnRamped",
-    title: "Convert KES → USDT",
+    title: "Convert KES → USDC",
     handler: "On-ramp (Swypt / Kotani)",
     shouldHappen:
-      "Hand the collected KES to a licensed on-ramp that converts to a USD stablecoin (USDT) at the locked rate and delivers it into the Bandari treasury wallet. Reconcile the amount received against the expected amount.",
+      "Hand the collected KES to a licensed on-ramp that converts to a USD stablecoin (USDC) at the locked rate and delivers it into the Bandari treasury wallet. Reconcile the amount received against the expected amount.",
     actuallyHappening:
-      "PLACEHOLDER: the conversion happens in-process at the quoted rate and the ledger credits treasury stablecoin. No real on-ramp provider is called. (The internal asset is USDC; it is labelled USDT in the demo narrative.)",
+      "PLACEHOLDER: the conversion happens in-process at the quoted rate and the ledger credits treasury stablecoin. No real on-ramp provider is called.",
     regulation: [
       "On-ramp holds the VASP / crypto-exchange license (not Bandari, initially)",
       "Travel-rule data sharing on the crypto transfer",
@@ -95,10 +95,10 @@ export const STAGE_PLAYBOOK: Record<PaymentStatus, StagePlaybook> = {
   },
   Bridging: {
     status: "Bridging",
-    title: "Move USDT to Hong Kong",
+    title: "Move USDC to Hong Kong",
     handler: "Custody (EVM / Circle)",
     shouldHappen:
-      "From a controlled treasury wallet, transfer the stablecoin (USDT) to the HK wallet (same-chain) or via bridge/CCTP cross-chain. Capture the tx hash, manage gas, and protect the signing keys.",
+      "From a controlled treasury wallet, transfer the stablecoin (USDC) to the HK wallet (same-chain) or via bridge/CCTP cross-chain. Capture the tx hash, manage gas, and protect the signing keys.",
     actuallyHappening:
       "The mock backend returns a deterministic fake tx hash. The testbed path (CUSTODY_PROVIDER=evm) does a REAL stablecoin transfer on Base Sepolia testnet via viem. No mainnet, no real value.",
     regulation: [
@@ -117,7 +117,7 @@ export const STAGE_PLAYBOOK: Record<PaymentStatus, StagePlaybook> = {
     title: "Confirm on-chain settlement",
     handler: "Custody (EVM / Circle)",
     shouldHappen:
-      "Wait for N on-chain confirmations (or the bridge attestation), verify the USDT actually landed in the HK wallet, then move it treasury→HK in the ledger.",
+      "Wait for N on-chain confirmations (or the bridge attestation), verify the USDC actually landed in the HK wallet, then move it treasury→HK in the ledger.",
     actuallyHappening:
       "Mock confirm returns 'confirmed' after a short delay with a fake attestation. The testbed path polls a real testnet receipt and asserts exact balance deltas.",
     regulation: [
@@ -134,7 +134,7 @@ export const STAGE_PLAYBOOK: Record<PaymentStatus, StagePlaybook> = {
     title: "Off-ramp in Hong Kong → pay the supplier",
     handler: "HK FX API + payout (Yativo / Thunes)",
     shouldHappen:
-      "Hand the HK-side USDT to a licensed HK partner. A HK FX API converts USDT→HKD (≈7.80) and a licensed payout partner delivers the supplier's chosen currency (HKD / CNH / CNY) to their bank or Alipay — with the supplier's KYB on file and trade authenticity checked.",
+      "Hand the HK-side USDC to a licensed HK partner. A HK FX API converts USDC→HKD (≈7.80) and a licensed payout partner delivers the supplier's chosen currency (HKD / CNH / CNY) to their bank or Alipay — with the supplier's KYB on file and trade authenticity checked.",
     actuallyHappening:
       "PLACEHOLDER: a stubbed HK FX call converts USD→HKD at a fixed ≈7.80 and a simulated payout id is generated. No real off-ramp or settlement rail is touched; the supplier's payout details are stored but unused.",
     regulation: [
@@ -143,7 +143,7 @@ export const STAGE_PLAYBOOK: Record<PaymentStatus, StagePlaybook> = {
       "Trade-authenticity / TBML checks; supplier KYB",
     ],
     partners: [
-      "HK FX / off-ramp API (licensed HK MSO) for USDT→HKD",
+      "HK FX / off-ramp API (licensed HK MSO) for USDC→HKD",
       "HK/China payout aggregator (Yativo, Thunes, Airwallex) or direct onshore PSP",
     ],
   },

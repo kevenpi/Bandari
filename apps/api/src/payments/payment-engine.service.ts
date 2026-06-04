@@ -176,7 +176,7 @@ export class PaymentEngine {
       );
       await this.transition(tx, payment, "OnRamped", {
         type: "onramped",
-        message: `KES converted to ${(result.usdcMinor / 1e6).toFixed(2)} USDT (${result.mode})`,
+        message: `KES converted to ${(result.usdcMinor / 1e6).toFixed(2)} USDC (${result.mode})`,
         data: { usdcMinor: result.usdcMinor, providerRef: result.providerRef },
         patch: { usdcMinor: result.usdcMinor },
       });
@@ -207,7 +207,7 @@ export class PaymentEngine {
       });
       await this.transition(tx, payment, "Bridging", {
         type: "bridge_sent",
-        message: `USDT transfer submitted (${sent.mode}) tx=${sent.txHash.slice(0, 12)}...`,
+        message: `USDC transfer submitted (${sent.mode}) tx=${sent.txHash.slice(0, 12)}...`,
         data: { txHash: sent.txHash, chain: sent.chain },
         patch: { walletTxHash: sent.txHash },
       });
@@ -243,7 +243,7 @@ export class PaymentEngine {
       );
       await this.transition(tx, payment, "Bridged", {
         type: "bridged",
-        message: `USDT confirmed on-chain (att=${confirm.attestationId ?? "n/a"})`,
+        message: `USDC confirmed on-chain (att=${confirm.attestationId ?? "n/a"})`,
         data: { attestationId: confirm.attestationId, confirmations: confirm.confirmations },
         patch: { attestationId: confirm.attestationId ?? null },
       });
@@ -282,7 +282,7 @@ export class PaymentEngine {
         tx,
       );
       const hk = created.hkFx
-        ? `HK off-ramp USDT→HK$${(created.hkFx.hkdMinor / 100).toFixed(2)} @ ${created.hkFx.rate.toFixed(2)}; `
+        ? `HK off-ramp USDC→HK$${(created.hkFx.hkdMinor / 100).toFixed(2)} @ ${created.hkFx.rate.toFixed(2)}; `
         : "";
       await this.transition(tx, payment, "PayingOut", {
         type: "payout_created",
